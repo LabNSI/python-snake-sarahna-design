@@ -27,6 +27,8 @@ def affichage_aire_de_jeu(hauteur, largeur, titre):
     curses.beep()
     return win
 
+
+
 def controle(win, key, keys = [____]):
 	'''
 	Controles de jeu
@@ -54,6 +56,7 @@ def controle(win, key, keys = [____]):
 
 	# retourne le code la touche
 	return ____
+
 
 
 def jeu(win):
@@ -97,12 +100,9 @@ def jeu(win):
 	______________
 
 		key = controle(win, key)
-		snake = deplacement(win, score, key, snake, food)
+        snake = deplacement(win, score, key, snake, food)
 
 	return score
-
-		
-
 
 
 
@@ -155,7 +155,8 @@ def deplacement(win, score, key, snake, food):
 	# Suppression du dernier anneau du serpent.
 	# Sera conditionner plus tard au fait que le serpent mange ou pas une pomme
 	# Le score sera alors également mis à jour
-	last = snake.pop()
+	# remplacer last = snake.pop() par :
+	food, snake, last, score = mange_pomme(win, food, snake, score)
 
 
 	# Affichage de la tête à sa nouvelle position en bleu sur fond jaune
@@ -175,6 +176,53 @@ def deplacement(win, score, key, snake, food):
 	# - la liste des positions en cours des anneaux du serpent
 	# - score en cours
 	return snake, score
+
+def mange_pomme(win, food, snake, score):
+	'''
+	Le serpent a-t-il mangé la pomme ?
+	paramètres :
+	  win : fenètre en cours
+	  food : liste des coordonnées de la pomme
+	  snake : liste des coordonnées des anneaux du serpent
+	  score : score en cours
+	retour :
+	  Tuple constitué de :
+	    - la liste des coordonnées actualisées de la pomme,
+	    - la liste des coordonnées du serpent,
+	    - la liste des coordonnées du dernier anneau à supprimer
+	    - le score en cours
+	'''
+	# initialisation de la liste contenant les coordonnées du dernier anneau du serpent
+	last = [0,0]
+
+	# Si le serpent a mangé la pomme
+	__________________:
+		# Emettre un beep
+		curses.beep()
+
+		# incrémenter le score
+		score _____________
+
+		# Réactualiser les coordonnées de la pomme
+		# On recommence tant que les coordonnées de la pomme sont dans le serpent
+		while _____ in _____:
+
+			# On actualise au hasard les coordonnées de la pomme
+			# dans les limite de la fenêtre
+			# voir la documentation de la fonction window.getmaxyx()
+			food[0] = randint(1, ___________________)
+			food[1] = randint(1, ___________________)
+
+		# Affichage de la pomme aux nouvelles coordonnées en vert sur fond noir
+		win.addch(____, ____, chr(211), curses.color_pair(2))
+		win.refresh()
+
+	# Sinon
+	else:
+		# Suppression du dernier anneau du serpent
+		last = snake.pop()
+
+	return food, snake, last, score
 
 
 
