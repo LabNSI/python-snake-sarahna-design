@@ -27,7 +27,7 @@ def affichage_aire_de_jeu(hauteur, largeur, titre):
     curses.beep()
     return win
 
-def controle(win, key, keys = [____]):
+def controle(win, key, keys = [KEY_RIGHT, KEY_LEFT, KEY_UP, KEY_DOWN]):
 	'''
 	Controles de jeu
 	paramètres :
@@ -38,22 +38,22 @@ def controle(win, key, keys = [____]):
 	  code de la touche reconnue
 	'''
 	# Sauvegarde de la dernière touche reconnue
-	old_key = ____
+	old_key = key
 
 	# Aquisition d'un nouveau caractère depuis le clavier
-	key = win.____
+	key = win.getch()
 
 	# Si aucune touche actionnée (pas de nouveau caractère)
 	# ou pas dans la liste des touches acceptées
 	# key prend la valeur de la dernière touche connue
-	if key == ____ or key not in ____ :
-		key = ____
+	if key == ""or key not in keys :
+		key = old_key
 
 	# Raffaichissement de la fenètre
 	win.refresh()
 
 	# retourne le code la touche
-	return ____
+	return key
 
 
 def jeu(win):
@@ -68,7 +68,7 @@ def jeu(win):
 	# initialisation du jeu
 	# Le serpent se dirige vers la droite au début du jeu.
 	# C'est comme si le joueur avait utilisé la flèche droite au clavier
-	key = ____
+	key = KEY_RIGHT
 	score = 0
 
 	# Definition des coordonnées du serpent
@@ -80,21 +80,21 @@ def jeu(win):
 	food = [10, 20]
 
 	# Affichage la nouriture en vert sur fond noir dans la fenêtre
-	curses.init_pair(2, curses.______, curses.______)
+	curses.init_pair(2, curses.COLOR_GREEN, curses.COLOR_BLACK)
 	win.addch(food[0], food[1], chr(211), curses.color_pair(2))  # Prints the food
 
 	# Affichage du serpent en bleu sur fond jaune
-	curses.init_pair(3, curses.____, curses.____)
+	curses.init_pair(3, curses.COLOR_BLUE, curses.COLOR_YELLOW)
 	# sur toute la longeur du serpent
-	for i in range(______)):
+	for i in range(len(snake)):
 		# affichage de chaque anneau dans la fenêtre en ligne, colonne
 		win.addstr(snake[i][0], snake[i][1], '*', curses.color_pair(3))
 
 	# Emission d'un beep  au début du jeu
-	curses.____
+	curses.beep()
 
 	# Tant que le joueur n'a pas quitter le jeu
-	______________
+	while key != 27:
 
 		key = controle(win, key)
 		snake = deplacement(win, score, key, snake, food)
@@ -121,35 +121,35 @@ def deplacement(win, score, key, snake, food):
 	# Si on appui sur la flèche "à droite",
 	# la tête se déplace de 1 caractère vers la droite (colonne + 1)
 	if key == KEY_RIGHT:
-		snake.insert(0, ________, ________)
+		snake.insert(0, [snake[0][0], snake[0][1]+1)]
 
 	# Sinon si on appui sur la flèche "à gauche",
 	# la tête se déplace de 1 caractère vers la gauche (colonne - 1)
 	elif key == KEY_LEFT:
-		snake.insert(0, ________, ________)
+		snake.insert(0, [snake[0][0], snake[0][1]+1)
 
 	# Sinon si on appui sur la flèche "en haut",
 	# la tête se déplace de 1 caractère vers le haut (ligne - 1)
 	elif key == KEY_UP:
-		snake.insert(0, ________, ________)
+		snake.insert(0, [snake[0][0]-1, snake[0][1]+1) 
 
 	# Sinon si on appui sur la flèche "en bas",
 	# la tête se déplace de 1 caractère vers le bas (ligne + 1)
 	elif key == KEY_DOWN:
-		snake.insert(0, ________, ________)
+		snake.insert(0, [snake[0][0]+1, snake[0][1]+1)
 
 	# si la serpent arrive au bord de la fenêtre (20 lignes x 60 colonnes)
-	if snake[0][0] == __:
-		 ________________
+	if snake[0][0] == 0:
+		 snake[0][0] = win.getmaxyx()[0]-1
 
-	if snake[0][1] == __:
-		________________
+	if snake[0][1] == 0:
+		 snake[0][0] = win.getmaxyx()[1]-1
 
-	if snake[0][0] == __:
-		 ________________
+	if snake[0][0] == win.getmaxyx()[0] - 1:
+		 snake[0][0] = 1
 
-	if snake[0][1] == __:
-		________________
+	if snake[0][1] == win.getmaxyx()[1]-1:
+		 snake[0][1] = 1
 
 
 	# Suppression du dernier anneau du serpent.
@@ -159,7 +159,7 @@ def deplacement(win, score, key, snake, food):
 
 
 	# Affichage de la tête à sa nouvelle position en bleu sur fond jaune
-	win.addstr(____, ____, ___, curses.color_pair(__))
+	win.addstr(snke[0][0], snake[0][1], "*", curses.color_pair(1))
 
 	# Effacement du dernier anneau : affichage du caractère "espace" sur fond noir
 	win.addstr(last[0], last[1], ' ', curses.color_pair(1))
